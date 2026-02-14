@@ -1,4 +1,5 @@
 import type { Ticket, TicketStatus } from "../types/ticket";
+import { Link } from "react-router-dom";
 
 type Props = {
   tickets: Ticket[];
@@ -62,7 +63,15 @@ export default function TicketList({
               }}
             >
               <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                <strong>{t.title}</strong>
+                <strong>
+                  {" "}
+                  <Link
+                    to={`/tickets/${encodeURIComponent(t.id)}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    {t.title}
+                  </Link>
+                </strong>
                 <span style={{ opacity: 0.7, fontSize: 12 }}>{t.id}</span>
                 <span
                   style={{ marginLeft: "auto", fontSize: 12, opacity: 0.7 }}

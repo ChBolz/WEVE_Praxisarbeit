@@ -19,3 +19,9 @@ export async function createTicket(ticket: Ticket): Promise<void> {
 
   if (!response.ok) throw new Error("Fehler beim Erstellen des Tickets");
 }
+
+export async function getTicketById(id: string): Promise<Ticket> {
+  const response = await fetch(`${BASE_URL}/${encodeURIComponent(id)}`);
+  if (!response.ok) throw new Error("Ticket nicht gefunden");
+  return response.json();
+}

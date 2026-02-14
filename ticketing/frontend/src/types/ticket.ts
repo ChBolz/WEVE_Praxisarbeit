@@ -5,5 +5,6 @@ export type Ticket = {
   title: string;
   description: string;
   status: TicketStatus;
+  assignedTo?: string | null;
   createdAt: string; // ISO string
 };
