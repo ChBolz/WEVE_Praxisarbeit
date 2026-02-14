@@ -1,26 +1,35 @@
-import { useMemo, useState } from "react";
-import type { TicketStatus, Ticket } from "../types/ticket";
-import { initialTickets } from "../data/dummyTickets";
+import { useEffect, useState } from "react";
+import type { Ticket, TicketStatus } from "../types/ticket";
 import TicketList from "../components/TicketList";
+import { getTickets } from "../services/ticketApi";
 
 export default function TicketListPage() {
-  // später ersetzen wir das durch API (useEffect + fetch)
-  const [tickets] = useState<Ticket[]>(initialTickets);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filter, setFilter] = useState<TicketStatus | "all">("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const headline = useMemo(() => {
-    const map: Record<string, string> = {
-      all: "Alle Tickets",
-      open: "Offene Tickets",
-      in_progress: "Tickets in Bearbeitung",
-      closed: "Geschlossene Tickets",
-    };
-    return map[filter];
-  }, [filter]);
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getTickets();
+        setTickets(data);
+      } catch (err) {
+        setError("Tickets konnten nicht geladen werden.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, []);
+
+  if (loading) return <p>Lade Tickets...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
-    <div style={{ display: "grid", gap: 12 }}>
-      <h2 style={{ margin: 0 }}>{headline}</h2>
+    <div>
+      <h2>Tickets</h2>
       <TicketList
         tickets={tickets}
         statusFilter={filter}
