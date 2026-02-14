@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Ticket, TicketStatus } from "../types/ticket";
 import TicketList from "../components/TicketList";
-import { getTickets } from "../services/ticketApi";
+import { getTickets } from "../services/ticketAPI";
 
 export default function TicketListPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -14,7 +14,7 @@ export default function TicketListPage() {
       try {
         const data = await getTickets();
         setTickets(data);
-      } catch (err) {
+      } catch {
         setError("Tickets konnten nicht geladen werden.");
       } finally {
         setLoading(false);
