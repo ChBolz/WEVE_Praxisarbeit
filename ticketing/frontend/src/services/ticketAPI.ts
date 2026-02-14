@@ -25,3 +25,16 @@ export async function getTicketById(id: string): Promise<Ticket> {
   if (!response.ok) throw new Error("Ticket nicht gefunden");
   return response.json();
 }
+
+export async function updateTicket(
+  id: string,
+  patch: Partial<Ticket>,
+): Promise<Ticket> {
+  const response = await fetch(`${BASE_URL}/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(patch),
+  });
+  if (!response.ok) throw new Error("Fehler beim Aktualisieren des Tickets");
+  return response.json();
+}

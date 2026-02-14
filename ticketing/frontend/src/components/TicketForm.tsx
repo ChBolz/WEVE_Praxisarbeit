@@ -1,18 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Ticket, TicketStatus } from "../types/ticket";
 
-type Props = {
-  onCreate: (data: Omit<Ticket, "id" | "createdAt">) => void;
+type FormValues = {
+  title: string;
+  description: string;
+  status: TicketStatus;
+  assignedTo?: string | null;
 };
 
-export default function TicketForm({ onCreate }: Props) {
+type Props = {
+  initialValues?: FormValues;
+  submitLabel?: string;
+  onSubmit: (data: FormValues) => Promise<void> | void;
+};
+
+export default function TicketForm({
+  initialValues,
+  submitLabel = "Speichern",
+  onSubmit,
+}: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<TicketStatus>("open");
+  const [assignedTo, setAssignedTo] = useState<string>("");
 
   const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    if (!initialValues) return;
+    setTitle(initialValues.title ?? "");
+    setDescription(initialValues.description ?? "");
+    setStatus(initialValues.status ?? "open");
+    setAssignedTo(initialValues.assignedTo ?? "");
+  }, [initialValues]);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
@@ -20,15 +42,12 @@ export default function TicketForm({ onCreate }: Props) {
     if (description.trim().length < 10)
       return setError("Beschreibung muss mindestens 10 Zeichen haben.");
 
-    onCreate({
+    await onSubmit({
       title: title.trim(),
       description: description.trim(),
       status,
+      assignedTo: assignedTo.trim() ? assignedTo.trim() : null,
     });
-
-    setTitle("");
-    setDescription("");
-    setStatus("open");
   }
 
   return (
@@ -42,7 +61,6 @@ export default function TicketForm({ onCreate }: Props) {
           id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="z.B. Login funktioniert nicht"
         />
       </div>
 
@@ -52,7 +70,6 @@ export default function TicketForm({ onCreate }: Props) {
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Beschreibe das Problem kurz und konkret…"
           rows={5}
         />
       </div>
@@ -70,6 +87,16 @@ export default function TicketForm({ onCreate }: Props) {
         </select>
       </div>
 
+      <div style={{ display: "grid", gap: 6 }}>
+        <label htmlFor="assignedTo">Zuweisung (Admin)</label>
+        <input
+          id="assignedTo"
+          value={assignedTo}
+          onChange={(e) => setAssignedTo(e.target.value)}
+          placeholder="z.B. Max Muster"
+        />
+      </div>
+
       {error && (
         <div
           style={{ padding: 10, border: "1px solid #f3c4c4", borderRadius: 8 }}
@@ -82,7 +109,7 @@ export default function TicketForm({ onCreate }: Props) {
         type="submit"
         style={{ width: "fit-content", padding: "8px 14px" }}
       >
-        Ticket erstellen
+        {submitLabel}
       </button>
     </form>
   );

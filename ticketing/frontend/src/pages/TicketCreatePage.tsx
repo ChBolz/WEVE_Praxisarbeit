@@ -6,22 +6,29 @@ import { createTicket } from "../services/ticketAPI";
 export default function TicketCreatePage() {
   const navigate = useNavigate();
 
-  async function handleCreate(data: Omit<Ticket, "id" | "createdAt">) {
+  async function handleCreate(data: {
+    title: string;
+    description: string;
+    status: Ticket["status"];
+    assignedTo?: string | null;
+  }) {
     const newTicket: Ticket = {
       id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
-      ...data,
+      title: data.title,
+      description: data.description,
+      status: data.status,
+      assignedTo: data.assignedTo ?? null,
     };
 
     await createTicket(newTicket);
-
     navigate("/tickets");
   }
 
   return (
     <div>
       <h2>Neues Ticket</h2>
-      <TicketForm onCreate={handleCreate} />
+      <TicketForm submitLabel="Ticket erstellen" onSubmit={handleCreate} />
     </div>
   );
 }
