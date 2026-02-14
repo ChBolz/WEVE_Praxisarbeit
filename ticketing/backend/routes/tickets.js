@@ -8,6 +8,19 @@ router.get("/", (req, res) => {
   res.json(tickets);
 });
 
+// GET /api/tickets/:id
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+
+  const ticket = db.prepare("SELECT * FROM tickets WHERE id = ?").get(id);
+
+  if (!ticket) {
+    return res.status(404).json({ error: "Ticket nicht gefunden" });
+  }
+
+  res.json(ticket);
+});
+
 // POST /api/tickets
 router.post("/", (req, res) => {
   const { id, title, description, status, assignedTo, createdAt } = req.body;
