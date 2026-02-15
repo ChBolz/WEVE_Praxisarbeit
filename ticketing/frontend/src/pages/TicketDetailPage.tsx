@@ -62,6 +62,9 @@ export default function TicketDetailPage() {
 
       <div>
         <Link to="/tickets">← Zurück zur Liste</Link>
+      </div>
+      <div>
+        {" "}
         <Link to={`/tickets/${encodeURIComponent(ticket.id)}/edit`}>
           Ticket bearbeiten
         </Link>
