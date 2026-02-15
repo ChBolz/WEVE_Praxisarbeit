@@ -4,9 +4,12 @@ import type { Ticket } from "../types/ticket";
 import { getTicketById } from "../services/ticketAPI";
 import { updateTicket } from "../services/ticketAPI";
 import type { TicketStatus } from "../types/ticket";
+import { deleteTicket } from "../services/ticketAPI";
+import { useNavigate } from "react-router-dom";
 
 export default function TicketDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
@@ -133,6 +136,32 @@ export default function TicketDetailPage() {
         <Link to={`/tickets/${encodeURIComponent(ticket.id)}/edit`}>
           Ticket bearbeiten
         </Link>
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={async () => {
+            if (!ticket) return;
+
+            const ok = window.confirm("Ticket wirklich löschen?");
+            if (!ok) return;
+
+            try {
+              await deleteTicket(ticket.id);
+              navigate("/tickets");
+            } catch {
+              setError("Ticket konnte nicht gelöscht werden.");
+            }
+          }}
+          style={{
+            marginLeft: 12,
+            padding: "6px 12px",
+            border: "1px solid #ccc",
+            borderRadius: 8,
+          }}
+        >
+          Ticket löschen
+        </button>
       </div>
     </div>
   );

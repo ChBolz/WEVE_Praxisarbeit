@@ -80,4 +80,18 @@ router.post("/", (req, res) => {
   res.status(201).json({ message: "Ticket erstellt" });
 });
 
+// DELETE /api/tickets/:id
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  const existing = db.prepare("SELECT * FROM tickets WHERE id = ?").get(id);
+  if (!existing) {
+    return res.status(404).json({ error: "Ticket nicht gefunden" });
+  }
+
+  db.prepare("DELETE FROM tickets WHERE id = ?").run(id);
+
+  res.status(204).send();
+});
+
 module.exports = router;

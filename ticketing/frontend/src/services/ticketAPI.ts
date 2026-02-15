@@ -38,3 +38,12 @@ export async function updateTicket(
   if (!response.ok) throw new Error("Fehler beim Aktualisieren des Tickets");
   return response.json();
 }
+
+export async function deleteTicket(id: string): Promise<void> {
+  const response = await fetch(`${BASE_URL}/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
+  if (!response.ok && response.status !== 204) {
+    throw new Error("Fehler beim Löschen des Tickets");
+  }
+}
