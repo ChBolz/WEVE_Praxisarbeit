@@ -1,12 +1,16 @@
 const Database = require("better-sqlite3");
 const path = require("path");
 
-const filename = process.env.DB_FILE || "database.db";
-const dbPath = path.join(__dirname, "database", filename);
+let db;
 
-const db = new Database(dbPath);
+if (process.env.DB_FILE === "memory") {
+  db = new Database(":memory:");
+} else {
+  const filename = process.env.DB_FILE || "database.db";
+  const dbPath = path.join(__dirname, "database", filename);
+  db = new Database(dbPath);
+}
 
-// Tabelle erstellen, falls sie nicht existiert
 db.prepare(
   `
   CREATE TABLE IF NOT EXISTS tickets (

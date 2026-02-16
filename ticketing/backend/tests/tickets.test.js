@@ -1,4 +1,4 @@
-process.env.DB_FILE = "test.db";
+process.env.DB_FILE = "memory";
 
 const request = require("supertest");
 const fs = require("fs");
@@ -6,11 +6,6 @@ const path = require("path");
 const app = require("../app");
 
 const testDbPath = path.join(__dirname, "..", "database", "test.db");
-
-beforeEach(() => {
-  // Test-DB vor jedem Test frisch machen
-  if (fs.existsSync(testDbPath)) fs.unlinkSync(testDbPath);
-});
 
 test("GET /api/tickets returns array", async () => {
   const res = await request(app).get("/api/tickets");
