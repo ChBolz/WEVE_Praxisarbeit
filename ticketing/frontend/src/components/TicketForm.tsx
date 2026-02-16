@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { Ticket, TicketStatus } from "../types/ticket";
+import { useState } from "react";
+import type { TicketStatus } from "../types/ticket";
 
 type FormValues = {
   title: string;
@@ -19,20 +19,16 @@ export default function TicketForm({
   submitLabel = "Speichern",
   onSubmit,
 }: Props) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<TicketStatus>("open");
-  const [assignedTo, setAssignedTo] = useState<string>("");
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [description, setDescription] = useState(
+    initialValues?.description ?? "",
+  );
+  const [status, setStatus] = useState<TicketStatus>(
+    initialValues?.status ?? "open",
+  );
+  const [assignedTo, setAssignedTo] = useState(initialValues?.assignedTo ?? "");
 
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!initialValues) return;
-    setTitle(initialValues.title ?? "");
-    setDescription(initialValues.description ?? "");
-    setStatus(initialValues.status ?? "open");
-    setAssignedTo(initialValues.assignedTo ?? "");
-  }, [initialValues]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

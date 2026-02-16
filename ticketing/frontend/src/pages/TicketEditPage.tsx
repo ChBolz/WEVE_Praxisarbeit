@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import TicketForm from "../components/TicketForm";
 import type { Ticket } from "../types/ticket";
-import { getTicketById, updateTicket } from "../services/ticketApi";
+import { getTicketById, updateTicket } from "../services/ticketAPI";
 
 export default function TicketEditPage() {
   const { id } = useParams<{ id: string }>();
@@ -32,6 +32,7 @@ export default function TicketEditPage() {
       <h2 style={{ margin: 0 }}>Ticket bearbeiten</h2>
 
       <TicketForm
+        key={ticket.id}
         submitLabel="Änderungen speichern"
         initialValues={{
           title: ticket.title,
